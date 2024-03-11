@@ -11,7 +11,11 @@ const ProjectSchema = new Schema({
     type: String,
     required: true,
   },
-  url: {
+  demo: {
+    type: String,
+    required: true,
+  },
+  urlImg: {
     type: String,
     required: true,
   },
