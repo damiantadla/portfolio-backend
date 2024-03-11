@@ -6,23 +6,23 @@ const AuthMiddleware = require("../middleware/authMiddleware");
 // Send messages to db (access open)
 router.post("/send", MessengerController.send);
 
-//Get message from db (access closed)
+//Get message from db (access admin)
 router.get(
-  "/getMessage/:id",
+  "/get/:id",
   AuthMiddleware.adminAuth,
   MessengerController.getMessageId,
 );
 
-// Get messages from db (access closed)
+// Get messages from db (access admin)
 router.get(
-  "/getMessages",
+  "/get",
   AuthMiddleware.adminAuth,
   MessengerController.getMessagesAll,
 );
 
-//Delete message (access closed)
+//Delete message (access admin)
 router.delete(
-  "/deleteMessage/:id",
+  "/delete/:id",
   AuthMiddleware.adminAuth,
   MessengerController.deleteMessage,
 );
