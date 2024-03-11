@@ -1,5 +1,4 @@
 const Project = require("../models/Project");
-const path = require("path");
 const fs = require("fs").promises;
 
 const newProject = async (req, res) => {
@@ -114,10 +113,6 @@ const getProjectID = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
-// save files on the server
-
-const saveFiles = async (req, res) => {};
 
 module.exports = {
   newProject,
