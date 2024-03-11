@@ -44,7 +44,7 @@ const login = async (req, res) => {
 
     bcrypt.compare(password, user.password).then((result) => {
       if (result) {
-        const maxAge = 10;
+        const maxAge = 3600;
         const token = jwt.sign(
           { id: user.id, email, role: user.role },
           process.env.ACCESS_TOKEN_SECRET,
@@ -53,6 +53,7 @@ const login = async (req, res) => {
         res.cookie("jwt", token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
+          secure: true,
         });
         res.status(200).json({ message: "Login successful", user });
       } else {
@@ -64,78 +65,6 @@ const login = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: "Internal server error" });
-  }
-};
-
-const userLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Complete the login and password fields" });
-    } else {
-      const foundUser = await User.findOne({ email: email }).exec();
-      if (!foundUser) {
-        // No authorisation, no such user exists
-        return res
-          .status(401)
-          .json({ message: "Please enter correct login and password" });
-      } else {
-        const match = await bcrypt.compare(password, foundUser.password);
-
-        if (match) {
-          if (foundUser.isActive == false) {
-            return res
-              .status(409)
-              .json({ message: "Your account has been deactivated" });
-          }
-          const id = foundUser.id;
-          // Role 1 normal user, role 101 moderator, role 1001 admin
-          const role = foundUser.role;
-
-          // Tworzenie tokenu
-          const accessSecret = process.env.ACCESS_TOKEN_SECRET;
-          const accessToken = jwt.sign(
-            {
-              id: id,
-              role: role,
-            },
-            accessSecret,
-            { expiresIn: "10s" },
-          );
-
-          const refreshSecret = process.env.REFRESH_TOKEN_SECRET;
-
-          const refreshToken = jwt.sign(
-            {
-              id: id,
-            },
-            refreshSecret,
-            { expiresIn: "1d" },
-          );
-
-          // Saving a refresh token in the database to the user
-          foundUser.refreshToken = refreshToken;
-          const result = await foundUser.save();
-
-          res.cookie("jwt", refreshToken, {
-            httpOnly: true,
-            sameSite: "None",
-            maxAge: 24 * 60 * 60 * 1000,
-          });
-          res.status(200).json({ accessToken });
-        } else {
-          return res
-            .status(401)
-            .json({ message: "Please enter correct login and password" });
-        }
-      }
-    }
-  } catch (err) {
-    console.log("Error when login:", err);
-    return res.status(500).json({ error: "Failed to login" });
   }
 };
 
