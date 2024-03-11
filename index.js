@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const userRoute = require("./routes/user");
 const projectRoute = require("./routes/projects");
 const messengerRoute = require("./routes/messenger");
+const portfolioRoute = require("./routes/portfolio");
 const cookieParser = require("cookie-parser");
 const db = require("./config/db");
 const path = require("path");
@@ -17,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/auth", userRoute);
 app.use("/messenger", messengerRoute);
-app.use("/portfolio", userRoute);
+app.use("/portfolio", portfolioRoute);
 app.use("/projects", projectRoute);
 
 mongoose.connection.once("open", () => {
