@@ -3,3 +3,7 @@
 .flaskenv*
 !.env.project
 !.env.vault
+
+/models/
+/newFolder/newFile.js
+/newFolder/
